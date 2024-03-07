@@ -2,9 +2,7 @@ const express = require('express');
 const axios = require('axios');
 const app = express();
 const PORT = process.env.PORT || 3000;
-const FILLOUT_API_BASE_URL = 'https://api.fillout.com/v1/api';//process.env.FILLOUT_API_BASE_URL;
-const FILLOUT_API_KEY = 'sk_prod_TfMbARhdgues5AuIosvvdAC9WsA5kXiZlW8HZPaRDlIbCpSpLsXBeZO7dCVZQwHAY3P4VSBPiiC33poZ1tdUj2ljOzdTCCOSpUZ_3912';//process.env.FILLOUT_API_KEY;
-
+require('dotenv').config();
 app.use(express.json());
 
 app.use((err, req, res, next) => {
@@ -14,9 +12,9 @@ app.use((err, req, res, next) => {
 
 const fetchFilloutApiResponse = async (formId) => {
     try {
-        const response = await axios.get(`${FILLOUT_API_BASE_URL}/forms/${formId}/submissions`, {
+        const response = await axios.get(`${process.env.FILLOUT_API_BASE_URL}/forms/${formId}/submissions`, {
             headers: {
-                Authorization: `Bearer ${FILLOUT_API_KEY}`
+                Authorization: `Bearer ${process.env.FILLOUT_API_KEY}`
             }
         });
         return response.data;
@@ -64,7 +62,7 @@ app.get('/:formId/filteredResponses', async (req, res, next) => {
         const pageCount = Math.ceil(filteredResponses.length / parsedLimit);
 
         res.json({
-            responses: filteredResponses.slice(0, parsedLimit), // Apply limit to responses
+            responses: filteredResponses.slice(0, parsedLimit),
             totalResponses: filteredResponses.length,
             pageCount: pageCount
         });
